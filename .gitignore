@@ -100,3 +100,8 @@ temp/
 # Uploads / generated files
 # =========================
 uploads/
+
+# AI / Agent files
+.agents/
+skills/
+SKILL.md
