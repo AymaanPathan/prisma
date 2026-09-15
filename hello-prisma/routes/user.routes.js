@@ -1,8 +1,12 @@
 import { Router } from "express";
-import { addUser } from "../controller/user.controller.js";
+import {
+  addUserController,
+  updateUserController,
+} from "../controller/user.controller.js";
 
 const router = Router();
 
-router.post("/add", addUser);
+router.post("/add", addUserController);
+router.patch("/update/:userId", updateUserController);
 
 export default router;
