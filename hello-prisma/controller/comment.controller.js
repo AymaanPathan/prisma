@@ -42,8 +42,8 @@ export const addNewCommentController = async (req, res) => {
         comment,
       },
     });
-    return res.status(200).json({
-      status: 200,
+    return res.status(201).json({
+      status: 201,
       comment: newComment,
       message: "Comment added successfully",
     });
@@ -57,8 +57,42 @@ export const addNewCommentController = async (req, res) => {
   }
 };
 
-// get post of all comments
+// get only comments of all post
+export const getCommentsOfPost = async (req, res) => {
+  try {
+    const commentsOfPost = await prisma.comment.findMany({
+      select: {
+        comment: true,
+        post: {
+          select: {
+            title: true,
+            description: true,
+          },
+        },
+      },
+    });
 
+    if (commentsOfPost.length == 0) {
+      return res.status(404).json({
+        status: 404,
+        message: "Not a single comment found",
+      });
+    }
+
+    return res.status(200).json({
+      status: 200,
+      comments: commentsOfPost,
+      message: "Comments fetched successfully",
+    });
+  } catch (error) {
+    console.log("internal server error while getting comment", error);
+    res.status(500).json({
+      status: 500,
+      error,
+      message: "Internal server error while getting comment",
+    });
+  }
+};
 
 // get users with its post and comments
 // update comment
