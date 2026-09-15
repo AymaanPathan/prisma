@@ -25,12 +25,42 @@ export const createPostController = async (req, res) => {
       data: newPost,
       message: "Post created successfully",
     });
-
   } catch (error) {
     console.log(error);
     return res.status(500).json({
       status: 500,
       message: "Internal server error while creating post",
+    });
+  }
+};
+
+// Get all Post with its user
+export const getAllPostWithitsUserController = async (req, res) => {
+  try {
+    const allPosts = await prisma.post.findMany({
+      include: {
+        user: true,
+      },
+    });
+
+    if (allPosts.length === 0) {
+      return res.status(404).json({
+        status: 404,
+        data: [],
+        message: "Post not found ",
+      });
+    }
+
+    return res.status(200).json({
+      status: 200,
+      data: allPosts,
+      message: "Post fetched successfully",
+    });
+  } catch (error) {
+    console.log("Internal server error while getting post with its user");
+    return res.status(500).json({
+      status: 500,
+      message: "Internal server error while getting post with its user",
     });
   }
 };
