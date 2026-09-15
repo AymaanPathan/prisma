@@ -132,4 +132,56 @@ export const getCommentsWithUser = async (req, res) => {
 };
 
 // update comment
+export const updateCommentController = async (req, res) => {
+  try {
+    const commentId = req.params.commentId;
+    const { comment } = req.body;
+    const updatedComment = await prisma.comment.update({
+      where: {
+        id: Number(commentId),
+      },
+      data: {
+        comment: comment,
+      },
+    });
+
+    return res.status(200).json({
+      status: 200,
+      updatedComment: updatedComment,
+      message: "Comment updated successfully",
+    });
+  } catch (error) {
+    console.log("internal server error while updating comment", error);
+    res.status(500).json({
+      status: 500,
+      error,
+      message: "Internal server error while updating comment",
+    });
+  }
+};
+
 // delete comment
+export const deleteCommentController = async (req, res) => {
+  try {
+    const commentId = req.params.commentId;
+
+    const deletedComment = await prisma.comment.delete({
+      where: {
+        id: Number(commentId),
+      },
+    });
+
+    return res.status(200).json({
+      status: 200,
+      deletedComment: deletedComment,
+      message: "Comment deleted successfully",
+    });
+  } catch (error) {
+    console.log("internal server error while deleting comment", error);
+    res.status(500).json({
+      status: 500,
+      error,
+      message: "Internal server error while deleting comment",
+    });
+  }
+};
