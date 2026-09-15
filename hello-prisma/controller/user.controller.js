@@ -25,13 +25,13 @@ export const addUserController = async (req, res) => {
       },
     });
 
-    return res.status(200).json({
-      status: 200,
+    return res.status(201).json({
+      status: 201, //resource created code
       addedUser: newUser,
       message: "User added successfully",
     });
   } catch (error) {
-    return res.json({
+    return res.status(500).json({
       status: 400,
       message: "Internal server error while adding user",
     });
@@ -99,7 +99,6 @@ export const getAllUserController = async (req, res) => {
       data: allUser,
       message: "User Found Sucessfully",
     });
-
   } catch (error) {
     console.log("Internal server error while Getting user", error);
     return res.status(500).json({
@@ -114,15 +113,15 @@ export const getAllUserController = async (req, res) => {
 export const getUserByIdController = async (req, res) => {
   try {
     const userId = req.params.id;
-    const allUser = await prisma.user.findMany({
+    const User = await prisma.user.findUnique({
       where: {
-        id:Number(userId),
+        id: Number(userId),
       },
     });
 
-    if (allUser.length === 0) {
-      return res.status(200).json({
-        status: 200,
+    if (!User) {
+      return res.status(404).json({
+        status: 404, //resource not found code
         data: null,
         message: "No user found",
       });
@@ -130,7 +129,7 @@ export const getUserByIdController = async (req, res) => {
 
     return res.status(200).json({
       status: 200,
-      data: allUser,
+      data: User,
       message: "User Found Sucessfully",
     });
   } catch (error) {
