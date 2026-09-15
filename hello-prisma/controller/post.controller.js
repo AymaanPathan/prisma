@@ -5,10 +5,24 @@ export const createPostController = async (req, res) => {
   try {
     const { title, description, user_id } = req.body;
 
-    if (title.trim() === "" || description.trim() === "") {
+    if (
+      !title ||
+      !description ||
+      title.trim() === "" ||
+      description.trim() === ""
+    ) {
       return res.status(400).json({
         status: 400,
-        message: "Valid title and description required ",
+        message: "Valid title and description required",
+      });
+    }
+
+    const userId = Number(user_id);
+
+    if (!Number.isInteger(userId)) {
+      return res.status(400).json({
+        status: 400,
+        message: "Valid user_id required",
       });
     }
 
@@ -16,12 +30,12 @@ export const createPostController = async (req, res) => {
       data: {
         title,
         description,
-        user_id: Number(user_id),
+        user_id: userId,
       },
     });
 
-    return res.status(200).json({
-      status: 200,
+    return res.status(201).json({
+      status: 201,
       data: newPost,
       message: "Post created successfully",
     });
@@ -39,7 +53,13 @@ export const getAllPostWithitsUserController = async (req, res) => {
   try {
     const allPosts = await prisma.post.findMany({
       include: {
-        user: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
       },
     });
 
@@ -84,6 +104,14 @@ export const getPostwithUserNameController = async (req, res) => {
         },
       },
     });
+
+    if (!post) {
+      return res.status(404).json({
+        status: 404,
+        message: "Post not found",
+      });
+    }
+
     return res.status(200).json({
       status: 200,
       post: post,
@@ -117,8 +145,8 @@ export const updatePostController = async (req, res) => {
       },
     });
 
-    return res.status(201).json({
-      status: 201,
+    return res.status(200).json({
+      status: 200,
       updatedPost: updatePost,
       message: "Post updated successfully",
     });
@@ -141,8 +169,8 @@ export const deletePostController = async (req, res) => {
       },
     });
 
-    return res.status(201).json({
-      status: 201,
+    return res.status(200).json({
+      status: 200,
       updatedPost: deletePost,
       message: "Post deleted successfully",
     });
