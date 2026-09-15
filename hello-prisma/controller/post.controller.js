@@ -100,3 +100,35 @@ export const getPostwithUserNameController = async (req, res) => {
     });
   }
 };
+
+// Update post
+export const updatePostController = async (req, res) => {
+  const { title, description } = req.body;
+  try {
+    const postId = req.params.postId;
+
+    const updatePost = await prisma.post.update({
+      where: {
+        id: Number(postId),
+      },
+      data: {
+        title: title,
+        description: description,
+      },
+    });
+
+    return res.status(201).json({
+      status: 201,
+      updatedPost: updatePost,
+      message: "Post updated successfully",
+    });
+  } catch (error) {
+    console.log("Internal server error while updating post", error);
+    return res.status(500).json({
+      status: 500,
+      message: "Internal server error while updating post",
+    });
+  }
+};
+
+// Delete post
