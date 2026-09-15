@@ -95,5 +95,41 @@ export const getCommentsOfPost = async (req, res) => {
 };
 
 // get users with its post and comments
+export const getCommentsWithUser = async (req, res) => {
+  try {
+    const commentsOfPost = await prisma.comment.findMany({
+      select: {
+        comment: true,
+        user: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    if (commentsOfPost.length == 0) {
+      return res.status(404).json({
+        status: 404,
+        message: "Not a single comment found",
+      });
+    }
+
+    return res.status(200).json({
+      status: 200,
+      comments: commentsOfPost,
+      message: "Comments fetched successfully",
+    });
+  } catch (error) {
+    console.log("internal server error while getting comment", error);
+    res.status(500).json({
+      status: 500,
+      error,
+      message: "Internal server error while getting comment",
+    });
+  }
+};
+
 // update comment
 // delete comment
