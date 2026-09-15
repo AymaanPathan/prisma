@@ -12,11 +12,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
     "@prisma/orm-postgres": "^8.0.0-rc.11",
     "dotenv": "^17.4.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "pg": "^8.23.0"
   },
   "devDependencies": {
-    "@types/node": "^26.5.1"
+    "@types/node": "^26.5.1",
+    "@types/pg": "^8.23.1",
+    "prisma": "^7.10.0"
   }
 }
