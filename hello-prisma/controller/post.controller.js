@@ -132,3 +132,25 @@ export const updatePostController = async (req, res) => {
 };
 
 // Delete post
+export const deletePostController = async (req, res) => {
+  const postId = req.params.postId;
+  try {
+    const deletePost = await prisma.post.delete({
+      where: {
+        id: Number(postId),
+      },
+    });
+
+    return res.status(201).json({
+      status: 201,
+      updatedPost: deletePost,
+      message: "Post deleted successfully",
+    });
+  } catch (error) {
+    console.log("Internal server error while deleting post", error);
+    return res.status(500).json({
+      status: 500,
+      message: "Internal server error while deleting post",
+    });
+  }
+};
