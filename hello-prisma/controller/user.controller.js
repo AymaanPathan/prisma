@@ -81,3 +81,64 @@ export const updateUserController = async (req, res) => {
     });
   }
 };
+
+// Get All Users
+export const getAllUserController = async (req, res) => {
+  try {
+    const allUser = await prisma.user.findMany({});
+    if (allUser.length === 0) {
+      return res.status(200).json({
+        status: 200,
+        data: [],
+        message: "No user found",
+      });
+    }
+
+    return res.status(200).json({
+      status: 200,
+      data: allUser,
+      message: "User Found Sucessfully",
+    });
+
+  } catch (error) {
+    console.log("Internal server error while Getting user", error);
+    return res.status(500).json({
+      status: 500,
+      message: "Internal Server error while Getting All user",
+      error,
+    });
+  }
+};
+
+// Get user by id
+export const getUserByIdController = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const allUser = await prisma.user.findMany({
+      where: {
+        id:Number(userId),
+      },
+    });
+
+    if (allUser.length === 0) {
+      return res.status(200).json({
+        status: 200,
+        data: null,
+        message: "No user found",
+      });
+    }
+
+    return res.status(200).json({
+      status: 200,
+      data: allUser,
+      message: "User Found Sucessfully",
+    });
+  } catch (error) {
+    console.log("Internal server error while Getting user", error);
+    return res.status(500).json({
+      status: 500,
+      message: "Internal Server error while Getting User by id",
+      error,
+    });
+  }
+};
