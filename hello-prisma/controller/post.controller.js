@@ -64,3 +64,39 @@ export const getAllPostWithitsUserController = async (req, res) => {
     });
   }
 };
+
+// get single post with id and its user name only
+export const getPostwithUserNameController = async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const post = await prisma.post.findUnique({
+      where: {
+        id: Number(postId),
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        user: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+    return res.status(200).json({
+      status: 200,
+      post: post,
+      message: "Post fetched sucessfully",
+    });
+  } catch (error) {
+    console.log(
+      "Internal server error while getting post with its userName",
+      error,
+    );
+    return res.status(500).json({
+      status: 500,
+      message: "Internal server error while getting post with its userName",
+    });
+  }
+};
