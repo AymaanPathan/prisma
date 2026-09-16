@@ -184,7 +184,7 @@ export const deletePostController = async (req, res) => {
 };
 
 // Get post with user name and its comment count
-export const getPostDetail = async (req, res) => {
+export const getPostDetailController = async (req, res) => {
   try {
     const postId = req.params.postId;
     const post = await prisma.post.findUnique({
@@ -226,6 +226,36 @@ export const getPostDetail = async (req, res) => {
     return res.status(500).json({
       status: 500,
       message: "Internal server error while getting  post details",
+    });
+  }
+};
+
+// Get post where its desc start with hello
+export const getPostHelloController = async (req, res) => {
+  try {
+    const post = await prisma.post.findMany({
+      where: {
+        description: {
+          startsWith: "hello",
+        },
+      },
+    });
+    if (post.length === 0) {
+      res.status(404).json({
+        status: 404,
+        message: "No post found that starts with hello",
+      });
+    }
+    return res.status(200).json({
+      status: 200,
+      post,
+      message: "Post fetched successfully",
+    });
+  } catch (error) {
+    console.log("Internal server error while getting  post Hello", error);
+    return res.status(500).json({
+      status: 500,
+      message: "Internal server error while getting  post Hello",
     });
   }
 };
