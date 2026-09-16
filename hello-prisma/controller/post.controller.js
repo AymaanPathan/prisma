@@ -61,6 +61,9 @@ export const getAllPostWithitsUserController = async (req, res) => {
           },
         },
       },
+      orderBy: {
+        id: "asc",
+      },
     });
 
     if (allPosts.length === 0) {
