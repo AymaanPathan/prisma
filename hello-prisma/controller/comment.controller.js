@@ -42,6 +42,18 @@ export const addNewCommentController = async (req, res) => {
         comment,
       },
     });
+
+    await prisma.post.update({
+      where: {
+        id: post_id,
+      },
+      data: {
+        comment_count: {
+          increment: 1,
+        },
+      },
+    });
+
     return res.status(201).json({
       status: 201,
       comment: newComment,

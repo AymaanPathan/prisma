@@ -5,6 +5,7 @@ import {
   getAllPostWithitsUserController,
   getPostwithUserNameController,
   updatePostController,
+  getPostDetail,
 } from "../controller/post.controller.js";
 
 const router = Router();
@@ -14,4 +15,6 @@ router.get("/", getAllPostWithitsUserController);
 router.get("/:postId", getPostwithUserNameController);
 router.patch("/update/:postId", updatePostController);
 router.delete("/delete/:postId", deletePostController);
+router.get("/details/:postId", getPostDetail);
+
 export default router;
