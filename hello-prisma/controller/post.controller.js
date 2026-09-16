@@ -262,3 +262,38 @@ export const getPostHelloController = async (req, res) => {
     });
   }
 };
+
+// get a post whos have more than equal 3 comments
+export const getPostMoreThenEaqual3CommentsController = async (req, res) => {
+  try {
+    const posts = await prisma.post.findMany({
+      where: {
+        comment_count: {
+          gte: 3,
+        },
+      },
+    });
+    if (posts.length == 0) {
+      return res.status(404).json({
+        status: 404,
+        message: "no post found with 3 comments",
+      });
+    }
+
+    return res.json({
+      status: 200,
+      posts,
+      message: "Post fetched successfully",
+    });
+  } catch (error) {
+    console.log("Internal server error while getting  post", error);
+    return res.status(500).json({
+      status: 500,
+      message: "Internal server error while getting  post",
+    });
+  }
+};
+
+// search post with description and title
+
+// paginate post
