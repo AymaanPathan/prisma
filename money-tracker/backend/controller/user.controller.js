@@ -1,4 +1,5 @@
 import { prisma } from "../lib/prisma.js";
+import bcrypt from "bcrypt";
 
 // register user
 export const registerUserController = async (req, res) => {
@@ -26,6 +27,8 @@ export const registerUserController = async (req, res) => {
       });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 12);
+
     const existedUser = await prisma.user.findUnique({
       where: {
         email: email,
@@ -43,17 +46,20 @@ export const registerUserController = async (req, res) => {
       data: {
         name,
         email,
-        password,
+        password: hashedPassword,
       },
     });
 
     return res.status(200).json({
       status: 200,
-      newUser,
+      user: {
+        name: newUser.name,
+        email: newUser.email,
+      },
       message: "User registered sucessfully",
     });
   } catch (error) {
-    console.log("Internal server error while registering",error);
+    console.log("Internal server error while registering", error);
     return res.status(500).json({
       status: 500,
       message: "Internal server error while registering",
