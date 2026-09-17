@@ -1,4 +1,4 @@
-import { prisma } from "../lib/prisma";
+import { prisma } from "../lib/prisma.js";
 
 // register user
 export const registerUserController = async (req, res) => {
@@ -53,7 +53,7 @@ export const registerUserController = async (req, res) => {
       message: "User registered sucessfully",
     });
   } catch (error) {
-    console.log("Internal server error while registering");
+    console.log("Internal server error while registering",error);
     return res.status(500).json({
       status: 500,
       message: "Internal server error while registering",
