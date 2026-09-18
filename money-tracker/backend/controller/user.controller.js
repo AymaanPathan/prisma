@@ -1,4 +1,5 @@
 import { prisma } from "../lib/prisma.js";
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 // register user
@@ -27,8 +28,6 @@ export const registerUserController = async (req, res) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12);
-
     const existedUser = await prisma.user.findUnique({
       where: {
         email: email,
@@ -42,6 +41,8 @@ export const registerUserController = async (req, res) => {
       });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 12);
+
     const newUser = await prisma.user.create({
       data: {
         name,
@@ -50,11 +51,30 @@ export const registerUserController = async (req, res) => {
       },
     });
 
+    const accessToken = jwt.sign(
+      {
+        userId: newUser.id,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      },
+    );
+
+    // Store jwt in cookie [cookie is a browser feature]
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true, // js cant access this cookie if true
+      secure: process.env.NODE_ENV === "PROD", // if true cookie can only sent over https
+      sameSite: "lax", // control cookie to send cross sites
+      maxAge: 7 * 24 * 60 * 60 * 1000, // how long cookie lives
+    });
+
     return res.status(200).json({
       status: 200,
       user: {
         name: newUser.name,
         email: newUser.email,
+        token: accessToken,
       },
       message: "User registered sucessfully",
     });
@@ -63,6 +83,7 @@ export const registerUserController = async (req, res) => {
     return res.status(500).json({
       status: 500,
       message: "Internal server error while registering",
+      error: error,
     });
   }
 };
@@ -108,8 +129,26 @@ export const loginUserController = async (req, res) => {
       });
     }
 
+    const accessToken = jwt.sign(
+      {
+        userId: findUser.id,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      },
+    );
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "PROD",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
     return res.status(200).json({
       status: 200,
+      token: accessToken,
       message: "Login sucessfull",
     });
   } catch (error) {
