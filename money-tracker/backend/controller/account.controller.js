@@ -27,8 +27,8 @@ export const addAccountController = async (req, res) => {
       },
     });
 
-    return res.status(200).json({
-      status: 200,
+    return res.status(201).json({
+      status: 201,
       newAccount,
       message: "Account Created Successfully",
     });
@@ -71,7 +71,6 @@ export const getAllAccountController = async (req, res) => {
 export const getUserAccounts = async (req, res) => {
   try {
     const userId = req.params.userId;
-    console.log("user id", userId);
     const accounts = await prisma.account.findMany({
       where: {
         userId: userId,
@@ -106,6 +105,41 @@ export const getUserAccounts = async (req, res) => {
     return res.status(500).json({
       status: 500,
       message: "Internal Server error while getting user accounts",
+      error,
+    });
+  }
+};
+
+// Rename Account
+export const renameAccount = async (req, res) => {
+  const { accountId, newAccountName } = req.body;
+
+  try {
+    const updatedAccount = await prisma.account.update({
+      where: {
+        id: accountId,
+      },
+      data: {
+        accountName: newAccountName,
+      },
+    });
+
+    return res.status(200).json({
+      status: 200,
+      message: "Account Updated successfully",
+      updatedAccount,
+    });
+  } catch (error) {
+    console.log("Internal Server Error while Renaming account", error);
+    if (error.code === "P2025") {
+      return res.status(404).json({
+        status: 404,
+        message: "No Account Found with this account id",
+      });
+    }
+    return res.status(500).json({
+      status: 500,
+      message: "Internal Server error while Renaming account",
       error,
     });
   }
