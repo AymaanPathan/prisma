@@ -131,6 +131,7 @@ export const renameAccount = async (req, res) => {
     });
   } catch (error) {
     console.log("Internal Server Error while Renaming account", error);
+
     if (error.code === "P2025") {
       return res.status(404).json({
         status: 404,
@@ -140,6 +141,39 @@ export const renameAccount = async (req, res) => {
     return res.status(500).json({
       status: 500,
       message: "Internal Server error while Renaming account",
+      error,
+    });
+  }
+};
+
+// Delete Account
+export const deleteAccount = async (req, res) => {
+  try {
+    const accountId = req.params.accountId;
+
+    const account = await prisma.account.delete({
+      where: {
+        id: accountId,
+      },
+    });
+
+    return res.status(200).json({
+      status: 200,
+      message: "Account Deleted Successfully",
+      deletedAccount: account,
+    });
+  } catch (error) {
+    console.log("Internal Server Error while Deleting account", error);
+
+    if (error.code === "P2025") {
+      return res.status(404).json({
+        status: 404,
+        message: "No Account Found with this account id",
+      });
+    }
+    return res.status(500).json({
+      status: 500,
+      message: "Internal Server error while Deleting account",
       error,
     });
   }

@@ -4,12 +4,14 @@ import {
   getAllAccountController,
   getUserAccounts,
   renameAccount,
+  deleteAccount,
 } from "../controller/account.controller.js";
 
 const router = Router();
 
 router.get("/getUserAccounts/:userId", getUserAccounts);
 router.patch("/update", renameAccount);
+router.delete("/delete/:accountId", deleteAccount);
 router.get("/getAll", getAllAccountController);
 router.post("/add", addAccountController);
 
