@@ -133,9 +133,9 @@ export const loginUserController = async (req, res) => {
 
     const accessToken = jwt.sign(
       {
-        userId: newUser.id,
-        userName: newUser.name,
-        userEmail: newUser.email,
+        userId: findUser.id,
+        userName: findUser.name,
+        userEmail: findUser.email,
       },
       process.env.JWT_SECRET,
       {
