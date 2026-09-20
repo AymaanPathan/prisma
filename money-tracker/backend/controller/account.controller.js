@@ -3,7 +3,8 @@ import { prisma } from "../lib/prisma.js";
 
 export const addAccountController = async (req, res) => {
   try {
-    const { userId, accountName, balance } = req.body;
+    const userId = req.user.userId;
+    const { accountName, balance } = req.body;
 
     if (!userId) {
       return res.status(404).json({
@@ -70,7 +71,7 @@ export const getAllAccountController = async (req, res) => {
 // Get Accounts Info for specific user
 export const getUserAccounts = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.user.userId;
     const accounts = await prisma.account.findMany({
       where: {
         userId: userId,
@@ -112,11 +113,13 @@ export const getUserAccounts = async (req, res) => {
 
 // Rename Account
 export const renameAccount = async (req, res) => {
+  const userId = req.user.userId;
   const { accountId, newAccountName } = req.body;
 
   try {
     const updatedAccount = await prisma.account.update({
       where: {
+        userId: userId,
         id: accountId,
       },
       data: {
@@ -148,11 +151,12 @@ export const renameAccount = async (req, res) => {
 
 // Delete Account
 export const deleteAccount = async (req, res) => {
+  const userId = req.user.userId;
+  const accountId = req.params.accountId;
   try {
-    const accountId = req.params.accountId;
-
     const account = await prisma.account.delete({
       where: {
+        userId: userId,
         id: accountId,
       },
     });
