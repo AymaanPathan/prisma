@@ -43,30 +43,6 @@ export const addAccountController = async (req, res) => {
   }
 };
 
-// Get All Account
-export const getAllAccountController = async (req, res) => {
-  try {
-    const allAccounts = await prisma.account.findMany({});
-    if (allAccounts.length == 0) {
-      return res.status(404).json({
-        status: 404,
-        message: "No Accounts Found",
-      });
-    }
-    return res.status(200).json({
-      status: 200,
-      allAccounts,
-      message: "All Accounts Fetched Successfully",
-    });
-  } catch (error) {
-    console.log("Internal server error while getting all account", error);
-    return res.status(500).json({
-      status: 500,
-      message: "Internal server error while getting all account",
-      error,
-    });
-  }
-};
 
 // Get Accounts Info for specific user
 export const getUserAccounts = async (req, res) => {
@@ -117,7 +93,7 @@ export const renameAccount = async (req, res) => {
   const { accountId, newAccountName } = req.body;
 
   try {
-    const updatedAccount = await prisma.account.update({
+    const updatedAccount = await prisma.account.updateMany({
       where: {
         userId: userId,
         id: accountId,
@@ -154,7 +130,7 @@ export const deleteAccount = async (req, res) => {
   const userId = req.user.userId;
   const accountId = req.params.accountId;
   try {
-    const account = await prisma.account.delete({
+    const account = await prisma.account.deleteMany({
       where: {
         userId: userId,
         id: accountId,

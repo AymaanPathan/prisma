@@ -1,7 +1,6 @@
 import { Router } from "express";
 import {
   addAccountController,
-  getAllAccountController,
   getUserAccounts,
   renameAccount,
   deleteAccount,
@@ -11,9 +10,8 @@ import { authenticateUser } from "../middleware/auth.js";
 const router = Router();
 
 router.get("/getUserAccounts/:userId", authenticateUser, getUserAccounts);
-router.patch("/update", renameAccount);
-router.delete("/delete/:accountId", deleteAccount);
-router.get("/getAll", getAllAccountController);
-router.post("/add", addAccountController);
+router.patch("/update", authenticateUser, renameAccount);
+router.delete("/delete/:accountId", authenticateUser, deleteAccount);
+router.post("/add", authenticateUser, addAccountController);
 
 export default router;
