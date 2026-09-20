@@ -54,6 +54,8 @@ export const registerUserController = async (req, res) => {
     const accessToken = jwt.sign(
       {
         userId: newUser.id,
+        userName: newUser.name,
+        userEmail: newUser.email,
       },
       process.env.JWT_SECRET,
       {
@@ -131,7 +133,9 @@ export const loginUserController = async (req, res) => {
 
     const accessToken = jwt.sign(
       {
-        userId: findUser.id,
+        userId: newUser.id,
+        userName: newUser.name,
+        userEmail: newUser.email,
       },
       process.env.JWT_SECRET,
       {

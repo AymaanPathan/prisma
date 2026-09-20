@@ -6,10 +6,11 @@ import {
   renameAccount,
   deleteAccount,
 } from "../controller/account.controller.js";
+import { authenticateUser } from "../middleware/auth.js";
 
 const router = Router();
 
-router.get("/getUserAccounts/:userId", getUserAccounts);
+router.get("/getUserAccounts/:userId", authenticateUser, getUserAccounts);
 router.patch("/update", renameAccount);
 router.delete("/delete/:accountId", deleteAccount);
 router.get("/getAll", getAllAccountController);
