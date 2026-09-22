@@ -14,8 +14,9 @@ export const transferFundsController = async (req, res) => {
           userId: userId,
         },
       });
+
       if (!senderAcc) {
-        throw new Error("No Sender Acc Found");
+        throw new Error("No Sender Acc Found of this user");
       }
       // 2 get receiver account
       const receiverAcc = await tx.account.findFirst({
@@ -66,8 +67,7 @@ export const transferFundsController = async (req, res) => {
     console.log("Internal server error while transfering funds", error);
     return res.status(500).json({
       status: 500,
-      message: "Internal server error while transfering funds",
-      error,
+      message: error.message,
     });
   }
 };
