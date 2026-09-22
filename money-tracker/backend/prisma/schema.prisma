@@ -23,6 +23,20 @@ model Account {
   balance   Float    @default(0)
   user      User     @relation(fields: [userId],references: [id], onDelete: Cascade )
   userId    String
+
+  sentTransactionss Transaction[] @relation("FromAccount")
+  receivedTransactions Transaction[] @relation("ToAccount")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+
+model Transaction {
+ id String @id @default(uuid())
+ amount Int 
+ fromAccountId String
+ toAccountId String
+ fromAccount Account @relation("FromAccount",fields: [fromAccountId], references: [id])
+ toAccount Account @relation("ToAccount",fields: [toAccountId], references: [id])
 }
